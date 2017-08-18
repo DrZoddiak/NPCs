@@ -11,9 +11,11 @@ import org.spongepowered.api.data.type.Career;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.data.type.HorseColor;
 import org.spongepowered.api.data.type.HorseStyle;
-import org.spongepowered.api.data.type.LlamaVariant;
+import org.spongepowered.api.data.type.HorseVariant;
 import org.spongepowered.api.data.type.OcelotType;
 import org.spongepowered.api.data.type.RabbitType;
+import org.spongepowered.api.data.type.SkeletonType;
+import org.spongepowered.api.data.type.ZombieType;
 import org.spongepowered.api.entity.ArmorEquipable;
 import org.spongepowered.api.entity.living.Human;
 import org.spongepowered.api.entity.living.Living;
@@ -21,7 +23,6 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,12 +42,10 @@ import me.mrdaniel.npcs.exceptions.NPCException;
 import me.mrdaniel.npcs.interfaces.mixin.NPCAble;
 import me.mrdaniel.npcs.io.NPCFile;
 import me.mrdaniel.npcs.managers.ActionManager;
-import me.mrdaniel.npcs.managers.GlowColorManager;
 import me.mrdaniel.npcs.managers.MenuManager;
 import me.mrdaniel.npcs.managers.NPCManager;
 import me.mrdaniel.npcs.utils.Position;
 import me.mrdaniel.npcs.utils.TextUtils;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -71,7 +70,6 @@ public abstract class MixinEntityLiving extends EntityLivingBase implements NPCA
 		this.interact = true;
 	}
 
-	@Shadow public abstract void faceEntity(Entity entityIn, float maxYawIncrease, float maxPitchIncrease);
 	@Shadow public abstract void enablePersistence();
 	@Shadow public abstract void setCanPickUpLoot(boolean canPickup);
 	@Shadow public abstract void setNoAI(boolean disable);
@@ -151,16 +149,11 @@ public abstract class MixinEntityLiving extends EntityLivingBase implements NPCA
 	}
 
 	@Override
-	public void setNPCGlowColor(final TextColor value) {
-		if (this.isGlowing()) { GlowColorManager.getInstance().setGlowColor((EntityLiving)(Object)this, value); }
-	}
-
-	@Override
 	public void setNPCBaby(final boolean value) {
 		if ((Object)this instanceof EntityZombie) { ((EntityZombie)(Object)this).setChild(value); }
 		else { ((EntityAgeable)(Object)this).setGrowingAge(value ? Integer.MIN_VALUE : 0); }
 
-		this.setLocationAndAngles(this.file.getX(), this.file.getY(), this.file.getZ(), this.file.getYaw(), this.file.getPitch());
+		super.setLocationAndAngles(this.file.getX(), this.file.getY(), this.file.getZ(), this.file.getYaw(), this.file.getPitch());
 	}
 
 	@Override
@@ -183,6 +176,7 @@ public abstract class MixinEntityLiving extends EntityLivingBase implements NPCA
 		((Living)this).offer(Keys.IS_SITTING, value);
 	}
 
+	@Override
 	public void setNPCSaddle(final boolean value) {
 		((Living)this).offer(Keys.PIG_SADDLE, value);
 	}
@@ -203,8 +197,18 @@ public abstract class MixinEntityLiving extends EntityLivingBase implements NPCA
 	}
 
 	@Override
-	public void setNPCLlamaVariant(final LlamaVariant value) {
-		((Living)this).offer(Keys.LLAMA_VARIANT, value);
+	public void setNPCHorseVariant(final HorseVariant value) {
+		((Living)this).offer(Keys.HORSE_VARIANT, value);
+	}
+
+	@Override
+	public void setNPCZombieType(@Nonnull final ZombieType value) {
+		((Living)this).offer(Keys.ZOMBIE_TYPE, value);
+	}
+
+	@Override
+	public void setNPCSkeletonType(@Nonnull final SkeletonType value) {
+		((Living)this).offer(Keys.SKELETON_TYPE, value);
 	}
 
 	@Override
@@ -212,6 +216,7 @@ public abstract class MixinEntityLiving extends EntityLivingBase implements NPCA
 		((Living)this).offer(Keys.OCELOT_TYPE, value);
 	}
 
+	@Override
 	public void setNPCRabbitType(@Nonnull final RabbitType value) {
 		((Living)this).offer(Keys.RABBIT_TYPE, value);
 	}

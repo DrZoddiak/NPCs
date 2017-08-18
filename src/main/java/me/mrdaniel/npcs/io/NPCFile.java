@@ -14,9 +14,11 @@ import javax.annotation.Nullable;
 import org.spongepowered.api.data.type.Career;
 import org.spongepowered.api.data.type.HorseColor;
 import org.spongepowered.api.data.type.HorseStyle;
-import org.spongepowered.api.data.type.LlamaVariant;
+import org.spongepowered.api.data.type.HorseVariant;
 import org.spongepowered.api.data.type.OcelotType;
 import org.spongepowered.api.data.type.RabbitType;
+import org.spongepowered.api.data.type.SkeletonType;
+import org.spongepowered.api.data.type.ZombieType;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.format.TextColor;
@@ -158,8 +160,14 @@ public class NPCFile {
 	public NPCFile setHorseColor(@Nonnull final HorseColor value) { this.node.getNode("horse", "color").setValue(value.getId()); return this; }
 	public Optional<HorseColor> getHorseColor() { return Optional.ofNullable(this.node.getNode("horse", "color").getString()).map(id -> NPCs.getInstance().getGame().getRegistry().getType(HorseColor.class, id).orElse(null)); }
 
-	public NPCFile setLlamaVariant(@Nonnull final LlamaVariant value) { this.node.getNode("llamavariant").setValue(value.getId()); return this; }
-	public Optional<LlamaVariant> getLlamaVariant() { return Optional.ofNullable(this.node.getNode("llamavariant").getString()).map(id -> NPCs.getInstance().getGame().getRegistry().getType(LlamaVariant.class, id).orElse(null)); }
+	public NPCFile setHorseVariant(@Nonnull final HorseVariant value) { this.node.getNode("horsevariant").setValue(value.getId()); return this; }
+	public Optional<HorseVariant> getHorseVariant() { return Optional.ofNullable(this.node.getNode("horsevariant").getString()).map(id -> NPCs.getInstance().getGame().getRegistry().getType(HorseVariant.class, id).orElse(null)); }
+
+	public NPCFile setZombieType(@Nonnull final ZombieType value) { this.node.getNode("zombietype").setValue(value.getId()); return this; }
+	public Optional<ZombieType> getZombieType() { return Optional.ofNullable(this.node.getNode("zombietype").getString()).map(id -> NPCs.getInstance().getGame().getRegistry().getType(ZombieType.class, id).orElse(null)); }
+
+	public NPCFile setSkeletonType(@Nonnull final SkeletonType value) { this.node.getNode("skeletontype").setValue(value.getId()); return this; }
+	public Optional<SkeletonType> getSkeletonType() { return Optional.ofNullable(this.node.getNode("skeletontype").getString()).map(id -> NPCs.getInstance().getGame().getRegistry().getType(SkeletonType.class, id).orElse(null)); }
 
 	public NPCFile setCatType(@Nonnull final OcelotType value) { this.node.getNode("cattype").setValue(value.getId()); return this; }
 	public Optional<OcelotType> getCatType() { return Optional.ofNullable(this.node.getNode("cattype").getString()).map(id -> NPCs.getInstance().getGame().getRegistry().getType(OcelotType.class, id).orElse(null)); }

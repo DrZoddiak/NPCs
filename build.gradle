@@ -38,14 +38,14 @@ allprojects {
 
 dependencies {
     compileOnly "org.projectlombok:lombok:1.16.16"
-    compile 'org.spongepowered:spongeapi:6.1.0-SNAPSHOT'
+    compileOnly 'org.spongepowered:spongeapi:5.2.0-SNAPSHOT'
     compile 'org.spongepowered:mixin:0.5.17-SNAPSHOT'
     compile 'com.github.rojo8399:PlaceholderAPI:master-SNAPSHOT'
 }
 
 minecraft {
-    version = '1.11'
-    mappings = 'stable_32'
+    version = '1.10'
+    mappings = 'stable_29'
 }
 
 sourceSets {

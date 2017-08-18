@@ -8,9 +8,11 @@ import javax.annotation.Nullable;
 import org.spongepowered.api.data.type.Career;
 import org.spongepowered.api.data.type.HorseColor;
 import org.spongepowered.api.data.type.HorseStyle;
-import org.spongepowered.api.data.type.LlamaVariant;
+import org.spongepowered.api.data.type.HorseVariant;
 import org.spongepowered.api.data.type.OcelotType;
 import org.spongepowered.api.data.type.RabbitType;
+import org.spongepowered.api.data.type.SkeletonType;
+import org.spongepowered.api.data.type.ZombieType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.format.TextColor;
@@ -48,7 +50,9 @@ public interface NPCAble {
 	public void setNPCCareer(@Nonnull final Career value);
 	public void setNPCHorseStyle(@Nonnull final HorseStyle value);
 	public void setNPCHorseColor(@Nonnull final HorseColor value);
-	public void setNPCLlamaVariant(@Nonnull final LlamaVariant value);
+	public void setNPCHorseVariant(@Nonnull final HorseVariant value);
+	public void setNPCZombieType(@Nonnull final ZombieType value);
+	public void setNPCSkeletonType(@Nonnull final SkeletonType value);
 	public void setNPCCatType(@Nonnull final OcelotType value);
 	public void setNPCRabbitType(@Nonnull final RabbitType value);
 

@@ -13,12 +13,13 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.data.type.Career;
 import org.spongepowered.api.data.type.HorseColor;
 import org.spongepowered.api.data.type.HorseStyle;
-import org.spongepowered.api.data.type.LlamaVariant;
+import org.spongepowered.api.data.type.HorseVariant;
 import org.spongepowered.api.data.type.OcelotType;
+import org.spongepowered.api.data.type.SkeletonType;
+import org.spongepowered.api.data.type.ZombieType;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
@@ -35,7 +36,6 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
 import com.google.common.reflect.TypeToken;
@@ -99,7 +99,7 @@ import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 
 @Plugin(id = "npcs",
 		name = "NPCs",
-		version = "2.1.0-1.11.2",
+		version = "2.1.0",
 		authors = {"Daniel12321"},
 		url = "https://github.com/Daniel12321/NPCs",
 		description = "A plugin that adds simple custom NPC's to your worlds.",
@@ -132,7 +132,7 @@ public class NPCs {
 
 	@Listener
 	public void onPreInit(@Nullable final GamePreInitializationEvent e) {
-		DataRegistration.builder().dataClass(NPCData.class).immutableClass(ImmutableNPCData.class).builder(new NPCDataBuilder()).dataName("npc").manipulatorId("npc").buildAndRegister(this.container);
+		this.game.getDataManager().register(NPCData.class, ImmutableNPCData.class, new NPCDataBuilder());
 		this.game.getRegistry().registerModule(ActionType.class, ActionTypeRegistryModule.getInstance());
 		this.game.getRegistry().registerModule(ConditionType.class, ConditionTypeRegistryModule.getInstance());
 		this.game.getRegistry().registerModule(PageType.class, PageTypeRegistryModule.getInstance());
@@ -156,23 +156,24 @@ public class NPCs {
 			.child(CommandSpec.builder().description(this.getDescription("Deselect")).permission("npc.deselect").executor(new CommandDeselect()).build(), "deselect")
 			.child(CommandSpec.builder().description(this.getDescription("GoTo")).permission("npc.goto").executor(new CommandGoto()).build(), "goto")
 			.child(CommandSpec.builder().description(this.getDescription("Move")).permission("npc.edit.move").executor(new CommandMove()).build(), "move")
-			.child(CommandSpec.builder().description(this.getDescription("Set Name")).permission("npc.edit.name").arguments(GenericArguments.remainingJoinedStrings(Text.of("name"))).executor(new CommandEdit<String>(PageTypes.MAIN, OptionTypes.NAME)).build(), "name")
-			.child(CommandSpec.builder().description(this.getDescription("Set Skin")).permission("npc.edit.skin").arguments(GenericArguments.string(Text.of("skin"))).executor(new CommandEdit<String>(PageTypes.MAIN, OptionTypes.SKIN)).build(), "skin")
-			.child(CommandSpec.builder().description(this.getDescription("Set Looking")).permission("npc.edit.look").arguments(GenericArguments.bool(Text.of("looking"))).executor(new CommandEdit<Boolean>(PageTypes.MAIN, OptionTypes.LOOKING)).build(), "looking")
-			.child(CommandSpec.builder().description(this.getDescription("Set Interact")).permission("npc.edit.interact").arguments(GenericArguments.bool(Text.of("interact"))).executor(new CommandEdit<Boolean>(PageTypes.MAIN, OptionTypes.INTERACT)).build(), "interact")
-			.child(CommandSpec.builder().description(this.getDescription("Set Glowing")).permission("npc.edit.glowing").arguments(GenericArguments.bool(Text.of("glowing"))).executor(new CommandEdit<Boolean>(PageTypes.MAIN, OptionTypes.GLOWING)).build(), "glowing")
-			.child(CommandSpec.builder().description(this.getDescription("Set Silent")).permission("npc.edit.silent").arguments(GenericArguments.bool(Text.of("silent"))).executor(new CommandEdit<Boolean>(PageTypes.MAIN, OptionTypes.SILENT)).build(), "silent")
-			.child(CommandSpec.builder().description(this.getDescription("Set GlowColor")).permission("npc.edit.glowcolor").arguments(GenericArguments.catalogedElement(Text.of("glowcolor"), TextColor.class)).executor(new CommandEdit<TextColor>(PageTypes.MAIN, OptionTypes.GLOWCOLOR)).build(), "glowcolor")
-			.child(CommandSpec.builder().description(this.getDescription("Set Baby")).permission("npc.edit.baby").arguments(GenericArguments.bool(Text.of("baby"))).executor(new CommandEdit<Boolean>(PageTypes.MAIN, OptionTypes.BABY)).build(), "baby")
-			.child(CommandSpec.builder().description(this.getDescription("Set Charged")).permission("npc.edit.charged").arguments(GenericArguments.bool(Text.of("charged"))).executor(new CommandEdit<Boolean>(PageTypes.MAIN, OptionTypes.CHARGED)).build(), "charged")
-			.child(CommandSpec.builder().description(this.getDescription("Set Angry")).permission("npc.edit.angry").arguments(GenericArguments.bool(Text.of("angry"))).executor(new CommandEdit<Boolean>(PageTypes.MAIN, OptionTypes.ANGRY)).build(), "angry")
-			.child(CommandSpec.builder().description(this.getDescription("Set Size")).permission("npc.edit.size").arguments(GenericArguments.integer(Text.of("size"))).executor(new CommandEdit<Integer>(PageTypes.MAIN, OptionTypes.SIZE)).build(), "size")
-			.child(CommandSpec.builder().description(this.getDescription("Set Sitting")).permission("npc.edit.sitting").arguments(GenericArguments.bool(Text.of("sitting"))).executor(new CommandEdit<Boolean>(PageTypes.MAIN, OptionTypes.SITTING)).build(), "sitting")
+			.child(CommandSpec.builder().description(this.getDescription("Set Name")).permission("npc.edit.name").arguments(GenericArguments.remainingJoinedStrings(Text.of("name"))).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.NAME)).build(), "name")
+			.child(CommandSpec.builder().description(this.getDescription("Set Skin")).permission("npc.edit.skin").arguments(GenericArguments.string(Text.of("skin"))).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.SKIN)).build(), "skin")
+			.child(CommandSpec.builder().description(this.getDescription("Set Looking")).permission("npc.edit.look").arguments(GenericArguments.bool(Text.of("looking"))).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.LOOKING)).build(), "looking")
+			.child(CommandSpec.builder().description(this.getDescription("Set Interact")).permission("npc.edit.interact").arguments(GenericArguments.bool(Text.of("interact"))).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.INTERACT)).build(), "interact")
+			.child(CommandSpec.builder().description(this.getDescription("Set Glowing")).permission("npc.edit.glowing").arguments(GenericArguments.bool(Text.of("glowing"))).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.GLOWING)).build(), "glowing")
+			.child(CommandSpec.builder().description(this.getDescription("Set Silent")).permission("npc.edit.silent").arguments(GenericArguments.bool(Text.of("silent"))).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.SILENT)).build(), "silent")
+			.child(CommandSpec.builder().description(this.getDescription("Set Baby")).permission("npc.edit.baby").arguments(GenericArguments.bool(Text.of("baby"))).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.BABY)).build(), "baby")
+			.child(CommandSpec.builder().description(this.getDescription("Set Charged")).permission("npc.edit.charged").arguments(GenericArguments.bool(Text.of("charged"))).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.CHARGED)).build(), "charged")
+			.child(CommandSpec.builder().description(this.getDescription("Set Angry")).permission("npc.edit.angry").arguments(GenericArguments.bool(Text.of("angry"))).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.ANGRY)).build(), "angry")
+			.child(CommandSpec.builder().description(this.getDescription("Set Size")).permission("npc.edit.size").arguments(GenericArguments.integer(Text.of("size"))).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.SIZE)).build(), "size")
+			.child(CommandSpec.builder().description(this.getDescription("Set Sitting")).permission("npc.edit.sitting").arguments(GenericArguments.bool(Text.of("sitting"))).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.SITTING)).build(), "sitting")
 			.child(CommandSpec.builder().description(this.getDescription("Set Career")).permission("npc.edit.career").arguments(GenericArguments.catalogedElement(Text.of("career"), Career.class)).executor(new CommandEdit<Career>(PageTypes.MAIN, OptionTypes.CAREER)).build(), "career")
-			.child(CommandSpec.builder().description(this.getDescription("Set HorseStyle")).permission("npc.edit.horsestyle").arguments(GenericArguments.catalogedElement(Text.of("horsestyle"), HorseStyle.class)).executor(new CommandEdit<HorseStyle>(PageTypes.MAIN, OptionTypes.HORSESTYLE)).build(), "horsestyle")
-			.child(CommandSpec.builder().description(this.getDescription("Set HorseColor")).permission("npc.edit.horsecolor").arguments(GenericArguments.catalogedElement(Text.of("horsecolor"), HorseColor.class)).executor(new CommandEdit<HorseColor>(PageTypes.MAIN, OptionTypes.HORSECOLOR)).build(), "horsecolor")
-			.child(CommandSpec.builder().description(this.getDescription("Set LlamaVariant")).permission("npc.edit.llamavariant").arguments(GenericArguments.catalogedElement(Text.of("llamavariant"), LlamaVariant.class)).executor(new CommandEdit<LlamaVariant>(PageTypes.MAIN, OptionTypes.LLAMAVARIANT)).build(), "llamavariant")
-			.child(CommandSpec.builder().description(this.getDescription("Set CatType")).permission("npc.edit.cattype").arguments(GenericArguments.catalogedElement(Text.of("cattype"), OcelotType.class)).executor(new CommandEdit<OcelotType>(PageTypes.MAIN, OptionTypes.CATTYPE)).build(), "cattype")
+			.child(CommandSpec.builder().description(this.getDescription("Set HorseStyle")).permission("npc.edit.horsestyle").arguments(GenericArguments.catalogedElement(Text.of("horsestyle"), HorseStyle.class)).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.HORSESTYLE)).build(), "horsestyle")
+			.child(CommandSpec.builder().description(this.getDescription("Set HorseColor")).permission("npc.edit.horsecolor").arguments(GenericArguments.catalogedElement(Text.of("horsecolor"), HorseColor.class)).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.HORSECOLOR)).build(), "horsecolor")
+			.child(CommandSpec.builder().description(this.getDescription("Set HorseVariant")).permission("npc.edit.horsevariant").arguments(GenericArguments.catalogedElement(Text.of("horsevariant"), HorseVariant.class)).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.HORSEVARIANT)).build(), "horsevariant")
+			.child(CommandSpec.builder().description(this.getDescription("Set ZombieType")).permission("npc.edit.zombietype").arguments(GenericArguments.catalogedElement(Text.of("zombietype"), ZombieType.class)).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.ZOMBIETYPE)).build(), "zombietype")
+			.child(CommandSpec.builder().description(this.getDescription("Set SkeletonType")).permission("npc.edit.skeletontype").arguments(GenericArguments.catalogedElement(Text.of("skeletontype"), SkeletonType.class)).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.SKELETONTYPE)).build(), "skeletontype")
+			.child(CommandSpec.builder().description(this.getDescription("Set CatType")).permission("npc.edit.cattype").arguments(GenericArguments.catalogedElement(Text.of("cattype"), OcelotType.class)).executor(new CommandEdit<>(PageTypes.MAIN, OptionTypes.CATTYPE)).build(), "cattype")
 			.child(CommandSpec.builder().description(Text.of(TextColors.GOLD, "NPC | Helmet"))
 				.child(CommandSpec.builder().description(this.getDescription("Give Helmet")).permission("npc.armor.helmet.give").executor(new CommandEquipmentGive.Helmet()).build(), "give")
 				.child(CommandSpec.builder().description(this.getDescription("Remove Helmet")).permission("npc.armor.helmet.remove").executor(new CommandEquipmentRemove.Helmet()).build(), "remove")

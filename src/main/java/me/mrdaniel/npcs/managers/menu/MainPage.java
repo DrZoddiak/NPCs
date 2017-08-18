@@ -51,7 +51,6 @@ public class MainPage extends Page {
 		lines[++c] = TextUtils.getToggleText("Interact", "/npc interact", file.getInteract());
 		lines[++c] = TextUtils.getToggleText("Silent", "/npc silent", file.getSilent());
 		if (OptionTypes.GLOWING.isSupported(npc)) { lines[++c] = TextUtils.getToggleText("Glowing", "/npc glowing", file.getGlowing()); }
-		if (OptionTypes.GLOWCOLOR.isSupported(npc)) { lines[++c] = TextUtils.getOptionsText("GlowColor", "/npc glowcolor <color>", file.getGlowColor().map(v -> TextUtils.capitalize(v.getName())).orElse("White")); }
 		if (OptionTypes.BABY.isSupported(npc)) { lines[++c] = TextUtils.getToggleText("Baby", "/npc baby", file.getBaby()); }
 		if (OptionTypes.CHARGED.isSupported(npc)) { lines[++c] = TextUtils.getToggleText("Charged", "/npc charged", file.getCharged()); }
 		if (OptionTypes.ANGRY.isSupported(npc)) { lines[++c] = TextUtils.getToggleText("Angry", "/npc angry", file.getAngry()); }
@@ -60,7 +59,9 @@ public class MainPage extends Page {
 		if (OptionTypes.CAREER.isSupported(npc)) { lines[++c] = TextUtils.getOptionsText("Career", "/npc career <career>", file.getCareer().map(v -> v.getName()).orElse("None")); }
 		if (OptionTypes.HORSESTYLE.isSupported(npc)) { lines[++c] = TextUtils.getOptionsText("Style", "/npc horsestyle <style>", file.getHorseStyle().map(v -> TextUtils.capitalize(v.getName().toLowerCase())).orElse("None")); }
 		if (OptionTypes.HORSECOLOR.isSupported(npc)) { lines[++c] = TextUtils.getOptionsText("Color", "/npc horsecolor <color>", file.getHorseColor().map(v -> TextUtils.capitalize(v.getName().toLowerCase())).orElse("None")); }
-		if (OptionTypes.LLAMAVARIANT.isSupported(npc)) { lines[++c] = TextUtils.getOptionsText("Variant", "/npc llamavariant <variant>", file.getLlamaVariant().map(v -> TextUtils.capitalize(v.getName().toLowerCase())).orElse("None")); }
+		if (OptionTypes.HORSEVARIANT.isSupported(npc)) { lines[++c] = TextUtils.getOptionsText("Variant", "/npc horsevariant <variant>", file.getHorseVariant().map(v -> TextUtils.capitalize(v.getName().toLowerCase())).orElse("None")); }
+		if (OptionTypes.ZOMBIETYPE.isSupported(npc)) { lines[++c] = TextUtils.getOptionsText("Zombie", "/npc zombietype <type>", file.getZombieType().map(v -> TextUtils.capitalize(v.getName().toLowerCase())).orElse("None")); }
+		if (OptionTypes.SKELETONTYPE.isSupported(npc)) { lines[++c] = TextUtils.getOptionsText("Skeleton", "/npc skeletontype <type>", file.getSkeletonType().map(v -> TextUtils.capitalize(v.getName())).orElse("None")); }
 		if (OptionTypes.CATTYPE.isSupported(npc)) { lines[++c] = TextUtils.getOptionsText("Cat", "/npc cattype <type>", file.getCatType().map(v -> TextUtils.capitalize(v.getId().toLowerCase().replace("ocelot", ""))).orElse("None")); }
 	}
 }
